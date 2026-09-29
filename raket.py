@@ -33,37 +33,9 @@ def θ(tillstånd):
     else:
         deltay = 60 - tillstånd[2]
         deltax = 80 - tillstånd[0]
-        θ = np.arctan2(deltay, deltax) + np.pi
+        θ = (1/3)*np.arctan2(deltay, deltax) + np.pi
         return θ
-
-
-    # elif (tillstånd[0]<80 and tillstånd[2]<60):
-    #     deltay = 60 - tillstånd[2]
-    #     deltax = 80 - tillstånd[0]
-    #     θ = np.arctan((deltay/deltax)) + np.pi
-    #     #print(θ,'1')
-    #     return θ
-    # elif (tillstånd[0]>80 and tillstånd[2]<60):
-    #     deltay = 60 - tillstånd[2]
-    #     deltax = 80 - tillstånd[0]
-    #     θ = (np.arctan(-(deltay/deltax)) + np.pi)
-    #     #print(θ,'2')
-    #     return θ
-    # elif (tillstånd[0]>80 and tillstånd[2]>60):
-    #     deltay = 60 - tillstånd[2]
-    #     deltax = 80 - tillstånd[0]
-    #     θ = np.arctan((deltay/deltax))
-    #     #print(θ,'3')
-    #     return θ
-    # elif (tillstånd[0]<80 and tillstånd[2]>60):
-    #     deltay = 60 - tillstånd[2]
-    #     deltax = 80 - tillstånd[0]
-    #     θ =-np.arctan((deltay/deltax))
-    #     #print(θ,'4')
-    #     return θ
-
     
-
 
 def u(tillstånd):
     uvec = np.zeros(2)
@@ -76,8 +48,6 @@ def u(tillstånd):
 def rocket(t, tillstånd):
     vxy = np.array([tillstånd[1], tillstånd[3]]) # hastighetsvektor
     a = np.array(F(t, vxy)/m(t) + (mprim(t)/m(t)) * u(tillstånd)) # accelerationsvektor, (ax, ay)
-
-    print(a, tillstånd[3])
 
     der = np.zeros(4)
     der[0] = tillstånd[1]
@@ -106,8 +76,6 @@ def RK(f, tspan, bv, h):
         res[i+1,:] = newstate
         state = newstate
 
-        #print(state)
-
         if 79.5<state[0]<80.5:
             if 59.5<state[2]<60.5:
                 break
@@ -115,14 +83,14 @@ def RK(f, tspan, bv, h):
     return res
 
 
-tspan = [0,15]
+tspan = [0,10]
 tillstånd = [0, 0, 0, 0]
 
 sol = solve_ivp(rocket, tspan, tillstånd, atol=1e-12, rtol=1e-12)
 xs  = sol.y[0] 
 ys  = sol.y[2]
 
-res = RK(rocket, tspan, tillstånd, 0.1)
+res = RK(rocket, tspan, tillstånd, 0.01)
 x = res[:,0]
 y = res[:,2]
 
