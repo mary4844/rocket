@@ -30,30 +30,38 @@ def F(t, v):
 def θ(tillstånd):
     if tillstånd[2] < 20: # om positionen i y led inte överstiger 20, fortsätt rakt uppåt
         return -(np.pi/2)
-    elif (tillstånd[0]<80 and tillstånd[2]<60):
+    else:
         deltay = 60 - tillstånd[2]
         deltax = 80 - tillstånd[0]
-        θ = np.arctan((deltay/deltax)) + np.pi
-        #print(θ,'1')
+        θ = np.arctan2(deltay, deltax) + np.pi
         return θ
-    elif (tillstånd[0]>80 and tillstånd[2]<60):
-        deltay = 60 - tillstånd[2]
-        deltax = 80 - tillstånd[0]
-        θ = (np.arctan(-(deltay/deltax)) + np.pi)
-        #print(θ,'2')
-        return θ
-    elif (tillstånd[0]>80 and tillstånd[2]>60):
-        deltay = 60 - tillstånd[2]
-        deltax = 80 - tillstånd[0]
-        θ = np.arctan((deltay/deltax))
-        #print(θ,'3')
-        return θ
-    elif (tillstånd[0]<80 and tillstånd[2]>60):
-        deltay = 60 - tillstånd[2]
-        deltax = 80 - tillstånd[0]
-        θ =-np.arctan((deltay/deltax))
-        #print(θ,'4')
-        return θ
+
+
+    # elif (tillstånd[0]<80 and tillstånd[2]<60):
+    #     deltay = 60 - tillstånd[2]
+    #     deltax = 80 - tillstånd[0]
+    #     θ = np.arctan((deltay/deltax)) + np.pi
+    #     #print(θ,'1')
+    #     return θ
+    # elif (tillstånd[0]>80 and tillstånd[2]<60):
+    #     deltay = 60 - tillstånd[2]
+    #     deltax = 80 - tillstånd[0]
+    #     θ = (np.arctan(-(deltay/deltax)) + np.pi)
+    #     #print(θ,'2')
+    #     return θ
+    # elif (tillstånd[0]>80 and tillstånd[2]>60):
+    #     deltay = 60 - tillstånd[2]
+    #     deltax = 80 - tillstånd[0]
+    #     θ = np.arctan((deltay/deltax))
+    #     #print(θ,'3')
+    #     return θ
+    # elif (tillstånd[0]<80 and tillstånd[2]>60):
+    #     deltay = 60 - tillstånd[2]
+    #     deltax = 80 - tillstånd[0]
+    #     θ =-np.arctan((deltay/deltax))
+    #     #print(θ,'4')
+    #     return θ
+
     
 
 
@@ -91,9 +99,9 @@ def RK(f, tspan, bv, h):
     for i in range(len(time)-1):
         k1 = f(time[i], state)
         k2 = f(time[i]+(h/2), state+((h/2)*k1))
-        k3 = f(time[i+1]+h/2, state+((h/2)*k2))
+        k3 = f(time[i]+(h/2), state+((h/2)*k2))
         k4 = f(time[i+1], state+h*k3)
-        newstate = state + (h/2)*(k1+2*k2+2*k3+k4)
+        newstate = state + (h/6)*(k1+2*k2+2*k3+k4)
 
         res[i+1,:] = newstate
         state = newstate
@@ -107,7 +115,7 @@ def RK(f, tspan, bv, h):
     return res
 
 
-tspan = [0,5]
+tspan = [0,15]
 tillstånd = [0, 0, 0, 0]
 
 sol = solve_ivp(rocket, tspan, tillstånd, atol=1e-12, rtol=1e-12)
